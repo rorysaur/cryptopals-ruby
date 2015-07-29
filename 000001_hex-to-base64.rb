@@ -4,7 +4,7 @@
 def base64_dict
   caps = ("A".."Z").to_a
   lowercase = ("a".."z").to_a
-  nums = (0..9).to_a
+  nums = ("0".."9").to_a
   symbols = %w(+ /)
 
   chars = caps + lowercase + nums + symbols
