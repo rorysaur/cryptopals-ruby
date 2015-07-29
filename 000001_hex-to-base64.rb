@@ -59,7 +59,7 @@ end
 # @return [Array<Integer>] an array of integers with values 0 or 1
 #
 # @example
-#   hex_to_bits(4) # => [0, 1, 0, 0]
+#   hex_to_bits("4") # => [0, 1, 0, 0]
 def hex_to_bits(hex)
   digits = hex.split("")
   hex_dict = hex_dict()
