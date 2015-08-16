@@ -16,19 +16,30 @@ module XORCipher
       cipher_bits_series = cipher_bits * multiplier
 
       xor_results = xor_bits(hex_bits, cipher_bits_series)
+      text = bits_to_ascii(xor_results)
 
-      bits_to_ascii(xor_results)
+      {
+        :text => text,
+        :score => frequency_match_score(text)
+      }
+    end
+
+    possible_outputs = possible_outputs.select do |output|
+      printable?(output[:text])
     end
 
     # rank outputs by frequency analysis score (descending)
     ranked_outputs = possible_outputs.sort_by do |output|
-      frequency_match_score(output)
+      output[:score]
     end.reverse
 
     # print N outputs with the highest scores
-    ranked_outputs.take(10).each_with_index do |output, idx|
-      puts "#{idx + 1} | #{frequency_match_score(output)} | #{output}"
-    end
+    # ranked_outputs.take(10).each_with_index do |output, idx|
+    #   puts "#{idx + 1} | #{frequency_match_score(output)} | #{output}"
+    # end
+
+    # return output with highest score
+    ranked_outputs.take(3)
   end
 
   def self.bits_to_ascii(bits)
@@ -46,7 +57,7 @@ module XORCipher
     alpha = ("a".."z").to_a
     chars = str.downcase.split("")
     char_counts = {}
-    
+
     chars.each do |char|
       next unless alpha.include?(char)
       if char_counts[char]
@@ -91,6 +102,15 @@ module XORCipher
     top_6_score + bottom_6_score
   end
 
+  def self.printable?(str)
+    chars = str.split("")
+    chars.all? do |char|
+      printable = (char.ord >= 32 && char.ord <= 126)
+      newline = (char.ord == 10) || (char.ord == 13)
+      newline || printable
+    end
+  end
+
   def self.xor_bits(bits1, bits2)
     bits1.map.with_index do |bit, idx|
       bit ^ bits2[idx]
@@ -99,4 +119,4 @@ module XORCipher
 end
 
 message = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736"
-XORCipher.decrypt(message)
+# XORCipher.decrypt(message)
